@@ -1,7 +1,9 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap');
 
 body {
   margin: 0;
   box-sizing: border-box;
   padding: 0;
+  font-family: 'Outfit', sans-serif;
 }
