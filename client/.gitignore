@@ -1,0 +1,12 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+
+/node_modules/
