@@ -1,9 +1,12 @@
 import React from 'react'
+import Sidebar from '../components/Sidebar.jsx'
+import Chatbar from '../components/Chatbar.jsx'
 
 const MesgHome = () => {
   return (
     <div>
-      Home
+      <Sidebar />
+      <Chatbar />
     </div>
   )
 }

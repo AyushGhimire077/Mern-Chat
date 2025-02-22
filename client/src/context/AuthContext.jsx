@@ -11,6 +11,8 @@ const AuthContextProvider = ({ children }) => {
     //backendURI
     const backendURI = 'http://localhost:4000';
 
+    const [userData, setUserData] = useState(null);
+
     const navigate = useNavigate();
 
     const [isLogin, setIsLogin] = useState(false);
@@ -24,7 +26,7 @@ const AuthContextProvider = ({ children }) => {
             });
             if(data.success){
                 setIsLogin(true);
-                console.log(data.user);
+                setUserData(data.requestUser);
             }else{
                 setIsLogin(false);
             }
@@ -93,10 +95,31 @@ const AuthContextProvider = ({ children }) => {
         }
     }
 
+    const handleProfile = async (image) => {
+      try {
+        const { data } = await axios.post(`${backendURI}/api/auth/update-profile`, {
+          userProfile: image
+        }, { withCredentials: true });
+
+        if (data.success) {
+            toast.success(data.message);
+            window.location.reload();
+        } else {
+          toast.error(data.message);
+        }
+      } catch (error) {
+        toast.error('Something went worng')
+        console.log(error);
+      }
+    };
+
     const value = {
-        registerUser,
-        loginUser,
-        isLogin
+      registerUser,
+      loginUser,
+      isLogin,
+      backendURI,
+      userData,
+      handleProfile,
     };
 
     return(
