@@ -6,7 +6,7 @@ export const fetchUsers = async (req, res) => {
     try {
         const loggedUser = req.user._id;
         const filteredUsers = await User.find({ _id: { $ne: loggedUser } }).select("-password").exec();        
-        res.status(200).json(filteredUsers);
+        return res.status(200).json({ success: true, users: filteredUsers });
         
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
