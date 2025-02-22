@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import {jwtDecode} from "jwt-decode";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -14,32 +13,30 @@ const AuthContextProvider = ({ children }) => {
 
     const navigate = useNavigate();
 
-    const [userToken, setUserToken] = useState(null);
     const [isLogin, setIsLogin] = useState(false);
 
     //check if user is logged in
-    useEffect(() => {
+    const checkAuth = async() => {
         try {
             //get token from local storage
-            const token = Cookies.get("token");
-            if (token) {
-                //decode token
-                const decodedToken = jwtDecode(token);
-                if(decodedToken.exp * 1000 < Date.now()){
-                    localStorage.removeItem('token');
-                }
-                setUserToken(decodedToken);
+            const { data } =  await axios.get(`${backendURI}/api/auth/check-auth`, {
+              withCredentials: true,
+            });
+            if(data.success){
                 setIsLogin(true);
-            }  
+                console.log(data.user);
+            }else{
+                setIsLogin(false);
+            }
         } catch (error) {
             console.log(error)
         }
-    },[])
+    } 
 
     useEffect(() => {
-        const token = Cookies.get("token");
-        console.log(token);
-    })
+        checkAuth();
+    }, []);
+
 
     //regsiter user
     const registerUser = async (name, email, password) => {
@@ -54,7 +51,7 @@ const AuthContextProvider = ({ children }) => {
             //if user is registered
             if (data.success) {
                 toast.success(data.message);
-                Cookies.set("token", data.token)
+                Cookies.set("token", data.token, { expires: 7 });
                 setIsLogin(true)
                 navigate('/')
             } else {
@@ -82,7 +79,7 @@ const AuthContextProvider = ({ children }) => {
             //if login is success
             if (data.success) {
                 toast.success(data.message)
-                Cookies.set("token", data.token)
+                Cookies.set("token", data.token, { expires: 7 });
                 navigate('/')
                 setIsLogin(true)
             } else {

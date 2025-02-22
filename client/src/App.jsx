@@ -5,20 +5,27 @@ import {Toaster} from 'react-hot-toast'
 import Auth from "./pages/Auth.jsx";
 import { AuthContext } from "./context/AuthContext.jsx";
 import Home from "./pages/Home.jsx";
+import KnowMore from "./pages/KnowMore.jsx";
+import Contect from "./pages/Contect.jsx";
 
 const App = () => {
   const { isLogin } = useContext(AuthContext);
+
   return (
     <>
       <Toaster style={{ position: "fixed", top: "10px", right: "10px" }} />
       <Routes>
+        {/* if user is not login then guest page will be shown */}
+        {isLogin ? ( <Route path="/" element={<Home />} />) : ( <Route path="/" element={<Guest />} /> )}
 
-       {/* if user is not login then guest page will be shown */}
-        {isLogin ? <Route path="/" element={<Home />} /> : <Route path="/" element={<Guest />} />}
-        
-
-        <Route path="/authorization" element={<Auth />} />
-        
+        {/* only acessible when user is not login */}
+        {!isLogin && (
+          <>
+            <Route path="/authorization" element={<Auth />} />
+            <Route path="/know-more" element={<KnowMore />} />
+            <Route path="/contact" element={<Contect />} />
+          </>
+        )}
       </Routes>
     </>
   );
