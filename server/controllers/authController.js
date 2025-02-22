@@ -155,7 +155,7 @@ export const checkAuth = async (req, res) => {
              return res.status(401).json({ success: false, message: "Unauthorized - Token not found" });
         }
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        res.status(200).json({ success: true, user: decoded });
+        res.status(200).json({ success: true, user: decoded,  requestUser: req.user});
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
