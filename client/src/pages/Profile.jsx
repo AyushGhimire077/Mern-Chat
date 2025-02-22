@@ -5,7 +5,7 @@ import Sidebar from "../components/Sidebar.jsx";
 import aos from 'aos';
 
 const Profile = () => {
-  const { userData, handleProfile } = useContext(AuthContext);
+  const { userData, handleProfile,isLogin } = useContext(AuthContext);
   const [image, setImage] = useState(null);
 
   //for aos animation

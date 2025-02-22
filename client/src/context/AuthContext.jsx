@@ -16,6 +16,7 @@ const AuthContextProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const [isLogin, setIsLogin] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     //check if user is logged in
     const checkAuth = async() => {
@@ -32,6 +33,8 @@ const AuthContextProvider = ({ children }) => {
             }
         } catch (error) {
             console.log(error)
+        }finally{
+            setIsLoading(false);
         }
     } 
 
@@ -120,6 +123,7 @@ const AuthContextProvider = ({ children }) => {
       backendURI,
       userData,
       handleProfile,
+      isLoading
     };
 
     return(

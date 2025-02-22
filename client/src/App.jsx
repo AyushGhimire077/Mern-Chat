@@ -10,8 +10,16 @@ import Contect from "./pages/Contect.jsx";
 import Profile from "./pages/Profile.jsx";
 
 const App = () => {
-  const { isLogin } = useContext(AuthContext);
+  const { isLogin, isLoading } = useContext(AuthContext);
 
+     if(isLoading){
+       return (
+        <div class="flex items-center justify-center min-h-screen">
+         <div class="w-16 h-16 border-8 border-gray-200 border-t-green-500 rounded-full animate-spin"></div>
+      </div>
+       )
+     }
+  
   return (
     <>
       <Toaster style={{ position: "fixed", top: "10px", right: "10px" }} />
