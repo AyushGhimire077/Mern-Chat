@@ -150,7 +150,12 @@ export const updateProfile = async (req, res) => {
 //check auth
 export const checkAuth = async (req, res) => {
     try {
-         res.status(200).json(req.user);
+       const token = req.cookies.token; 
+          if(!token) {
+             return res.status(401).json({ success: false, message: "Unauthorized - Token not found" });
+        }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        res.status(200).json({ success: true, user: decoded });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
     }
