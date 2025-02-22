@@ -95,6 +95,9 @@ const AuthContextProvider = ({ children }) => {
           const errorMessage = error.response?.data?.message || 'Something went wrong';
           toast.error(errorMessage);
           console.log(error);
+        }finally{
+            setIsLoading(false);
+            window.location.reload();
         }
     }
 
@@ -113,6 +116,8 @@ const AuthContextProvider = ({ children }) => {
       } catch (error) {
         toast.error('Something went worng')
         console.log(error);
+      }finally{
+        setIsLoading(false);
       }
     };
 
