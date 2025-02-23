@@ -8,6 +8,7 @@ import Home from "./pages/Home.jsx";
 import KnowMore from "./pages/KnowMore.jsx";
 import Contect from "./pages/Contect.jsx";
 import Profile from "./pages/Profile.jsx";
+import Chat from "./pages/CHat.jsx";
 
 const App = () => {
   const { isLogin, isLoading } = useContext(AuthContext);
@@ -31,6 +32,7 @@ const App = () => {
           <Route path="/" element={<Guest />} />
         )}
 
+        <Route path="/chat/:receiverId" element={<Chat />} />
         {/* only acessible when user is not login */}
         {!isLogin && (
           <>

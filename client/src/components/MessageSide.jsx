@@ -2,10 +2,19 @@ import React, { useContext } from 'react';
 import { SidebarContext } from '../context/SidebarChatContext.jsx';
 import { FaUser } from 'react-icons/fa';
 import { AuthContext } from '../context/AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const MessageSide = () => {
   const { sidebarChats } = useContext(SidebarContext);
   const { userData } = useContext(AuthContext)
+
+  const navigate = useNavigate();
+
+  const handleClick = (receiverId) => {
+  console.log('Receiver ID:', receiverId)
+  navigate(`/chat/${receiverId}`);
+}
+
 
   return (
     <div className="w-[300px] h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-900 border-r border-gray-700">
@@ -23,7 +32,7 @@ const MessageSide = () => {
       </div>
       {sidebarChats.map((chat) => (
         <div 
-          key={chat._id} 
+          onClick={() => handleClick(chat._id)} key={chat._id}
           className="flex items-center gap-4 p-4 mx-2 hover:bg-gray-200 cursor-pointer transition-all 
           duration-200 ease-out rounded-lg group border-b border-gray-700/30 last:border-0"
         >

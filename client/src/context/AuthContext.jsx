@@ -59,16 +59,21 @@ const AuthContextProvider = ({ children }) => {
                 Cookies.set("token", data.token, { expires: 7 });
                 setIsLogin(true)
                 navigate('/')
+                window.location.reload();
+
             } else {
                 toast.error(data.message);
                 setIsLogin(false)
                 navigate('/')
+               window.location.reload();
             }
             
         } catch (error) {
            const errorMessage = error.response?.data?.message || "Something went wrong";
            toast.error(errorMessage);
            console.log(error);
+        }finally{
+            setIsLoading(false);
         }
     }
 
@@ -87,6 +92,8 @@ const AuthContextProvider = ({ children }) => {
                 Cookies.set("token", data.token, { expires: 7 });
                 navigate('/')
                 setIsLogin(true)
+                window.location.reload();
+
             } else {
                 toast.error(data.message)
                 navigate('/')
@@ -97,7 +104,6 @@ const AuthContextProvider = ({ children }) => {
           console.log(error);
         }finally{
             setIsLoading(false);
-            window.location.reload();
         }
     }
 

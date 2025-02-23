@@ -1,12 +1,15 @@
 import { AuthContextProvider } from "./AuthContext.jsx";
+import { ChatContextProvider } from "./ChatContext.jsx";
 import { SidebarProvider } from "./SidebarChatContext.jsx";
 
 
 const MainContextProvider = ({ children }) => {
     return (
      <AuthContextProvider>
-        <SidebarProvider>
-            {children}
+            <SidebarProvider>
+                <ChatContextProvider>
+                  {children}
+                </ChatContextProvider>
         </SidebarProvider>
      </AuthContextProvider>
     )

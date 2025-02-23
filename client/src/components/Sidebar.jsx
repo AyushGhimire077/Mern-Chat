@@ -61,7 +61,7 @@ const LogoutConfirmation = ({ onLogout, onCancel }) => {
                 data-aos="fade-in"
                 data-aos-duration="1000">
             </div>
-        <div className=" fixed inset-0 flex justify-center items-center bg-black/20 backdrop-blur-lg z-50">
+            <div className=" fixed inset-0 flex justify-center items-center bg-black/20 backdrop-blur-lg z-50">
                 <div className="flex flex-col items-center p-8 bg-gray-900/80 rounded-2xl border border-white/10 shadow-2xl space-y-6 backdrop-blur-sm"
                     data-aos="fade-in"
                     data-aos-delay="500"
@@ -119,13 +119,22 @@ const LogoutConfirmation = ({ onLogout, onCancel }) => {
             </div>
 
             <div className="ml-[10%] md:ml-[5%]  bg-[#FBFBFB] border-r border-gray-700 h-screen">
-               {location.pathname === "/profile" ? null :  <MessageSide />}
+               {location.pathname !== "/profile" ? <MessageSide />: null }
             </div>
                {showLogoutConfirmation && (
             <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-10">
                 <LogoutConfirmation onLogout={onLogout} onCancel={onCancel} />
             </div>
-        )}
+            )}
+            {location.pathname === "/" ?   
+             <div className='flex items-center justify-center flex-col w-full p-6 gap-8'>
+             <h1 className='text-4xl font-bold text-blue-400 leading-tight text-center'> Start Chat with Mern Chat</h1>
+             <p className='text-lg text-gray-600 max-w-lg text-center'>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi ratione exercitationem
+                    deserunt consequuntur, illo labore debitis molestiae itaque iusto! Exercitationem
+                    expedita animi odit quos id hic quam iure porro enim, earum nemo.</p>
+          </div>: null }
+       
         </div>
     );
 };
