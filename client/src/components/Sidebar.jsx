@@ -7,6 +7,7 @@ import "../style.css"
 import aos from 'aos';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext.jsx';
+import toast from 'react-hot-toast';
 
 const Sidebar = () => {
     const location = useLocation();
@@ -27,15 +28,18 @@ const Sidebar = () => {
     
 const onLogout = async () => {
     try {
-        const response = await axios.post(
+        const { data } = await axios.post(
             `${backendURI}/api/auth/logout`, 
             {},
             { withCredentials: true }
         );
-        console.log(response.data);
-        localStorage.clear();
-        toest.success('Logout successful');
-        navigate('/');
+        if(data.success){
+            console.log(data);
+            localStorage.clear();
+            navigate('/');
+        } else {
+            toast.error(data.message);
+        }
     } catch (error) {
         console.error('Logout error:', error.response?.data || error.message);
     }finally{

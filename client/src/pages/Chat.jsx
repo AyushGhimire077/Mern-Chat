@@ -2,40 +2,81 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ChatContext } from "../context/ChatContext";
 import Sidebar from "../components/Sidebar";
-import { FaImage } from "react-icons/fa";
+import { FaImage, FaUser, FaPaperPlane } from "react-icons/fa";
 
 const Chat = () => {
   const { receiverId } = useParams();
-    const { messages, fetchMessages, getReceiverInfo } = useContext(ChatContext);
-    console.log(messages);
+  const { messages, fetchMessages, fetchUserInfo, receiverInfo, userInfo, sendMessage } = useContext(ChatContext);
+  const [newMessage, setNewMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [newMessage, setNewMessage] = useState("");
-  const [receiver, setReceiver] = useState(null);
+  const [isSending, setIsSending] = useState(false);
 
+  // Fetch data with error handling
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        await Promise.all([
+          fetchMessages(receiverId),
+          fetchUserInfo(receiverId)
+        ]);
+        setError(null);
+      } catch (err) {
+        setError("Failed to load conversation");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
+    if (receiverId) loadData();
+  }, [receiverId]);
+
+  // Improved message sending with error handling
+  const handleSendMessage = async () => {
+    if (!newMessage.trim() || isSending) return;
+    
+    try {
+      setIsSending(true);
+      await sendMessage(receiverId, newMessage);
       setNewMessage("");
+    } catch (err) {
+      setError("Failed to send message");
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  // Handle Enter key for sending
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
     }
   };
 
   return (
     <div className="flex h-screen ml-[62px] bg-gray-100">
       <Sidebar />
-      
+
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Chat Header */}
-        {receiver && (
-          <div className="flex items-center p-4 bg-white border-b border-gray-200">
+        {receiverInfo && (
+          <div className="flex items-center ml-5 rounded-4xl p-4 bg-white border-b border-gray-200">
             <div className="flex items-center space-x-4">
-              <img
-                src={receiver?.profilePic || "/default-avatar.png"}
-                alt={receiver?.fullName}
-                className="w-10 h-10 rounded-full object-cover"
-              />
+              {receiverInfo?.userProfile ? (
+                <img
+                  src={receiverInfo.userProfile}
+                  alt={receiverInfo.fullName}
+                  className="w-10 h-10 rounded-full object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <FaUser className="w-10 h-10 p-1.5 rounded-full border border-gray-600 shadow-md text-[#2D3250]" />
+              )}
               <div>
-                <h2 className="text-lg font-semibold">{receiver.name}</h2>
+                <h2 className="text-lg font-semibold">{receiverInfo.fullName}</h2>
                 <p className="text-sm text-gray-500">Active now</p>
               </div>
             </div>
@@ -51,16 +92,37 @@ const Chat = () => {
           ) : error ? (
             <div className="text-red-500 text-center p-4">{error}</div>
           ) : messages?.length > 0 ? (
-            messages.map((msg, index) => (
-              <div key={index} className="flex items-start space-x-2">
-                <img
-                  src={receiver?.profilePic || "/default-avatar.png"}
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full mt-2"
-                />
-                <div className="bg-white p-3 rounded-2xl shadow-sm max-w-[70%]">
-                  <p className="text-gray-800">{msg.text}</p>
-                  <p className="text-xs text-gray-500 text-right mt-1">10:30 AM</p>
+            messages.map((msg) => (
+              <div 
+                key={msg.id} 
+                className={`flex ${msg.senderId === userInfo.id ? "justify-end" : "justify-start"}`}
+              >
+                <div className="flex items-start gap-2 max-w-[80%]">
+                  {msg.senderId !== userInfo.id && (
+                    <img
+                      src={receiverInfo?.userProfile || "/default-avatar.png"}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full mt-2"
+                      loading="lazy"
+                    />
+                  )}
+                  <div className={`p-3 rounded-2xl ${
+                    msg.senderId === userInfo.id 
+                      ? "bg-blue-500 text-white" 
+                      : "bg-white text-gray-800 shadow-sm"
+                  }`}>
+                    <p className="break-words">{msg.text}</p>
+                    <p className={`text-xs mt-1 ${
+                      msg.senderId === userInfo.id 
+                        ? "text-blue-100" 
+                        : "text-gray-500"
+                    }`}>
+                      {new Date(msg.createdAt).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))
@@ -72,23 +134,31 @@ const Chat = () => {
         </div>
 
         {/* Message Input */}
-        <div className="p-4 ml-4 bg-gray-50 border-t mb-2.5 m border-gray-200 rounded-2xl overflow-x-auto">
-          <div className="flex items-center gap-3 overflow-x-auto">
+        <div className="p-4 ml-4 bg-gray-50 border-t mb-2.5 border-gray-200 rounded-2xl">
+          <div className="flex items-center gap-3">
             <input
               type="text"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
+              onKeyDown={handleKeyPress}
               placeholder="Type a message..."
               className="flex-1 py-2.5 px-6 bg-gray-100 outline-none focus:ring-0 focus:border-gray-600 rounded-3xl"
+              disabled={isSending}
             />
             <button
               onClick={handleSendMessage}
-              className="p-2.5 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-             </button>
-               <FaImage className="p-2.5 bg-blue-500 text-[40px] rounded-full hover:bg-blue-600 transition-colors text-white"/>
+              disabled={!newMessage.trim() || isSending}
+              className={`p-2.5 rounded-full transition-colors ${
+                newMessage.trim() && !isSending
+                  ? "bg-blue-500 hover:bg-blue-600 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              <FaPaperPlane className="w-5 h-5" />
+            </button>
+            <button className="p-2.5 text-[#2D3250] hover:bg-gray-200 rounded-full transition-colors">
+              <FaImage className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </div>
