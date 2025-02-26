@@ -12,41 +12,41 @@ const Footer = () => {
       <div className="max-w-screen-xl mx-auto text-white px-6">
         <div className="flex flex-col md:flex-row justify-between items-center md:items-start space-y-8 md:space-y-0">
           <div className="text-center md:text-left">
-            <h3 className="text-4xl font-bold text-[#00A1AB] mb-2">
+            <h3 className="text-2xl sm:text-4xl font-bold text-[#00A1AB] mb-2">
               Mern-Chat
             </h3>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-400 text-[12px] sm:text-sm">
               © 2025 Mern-Chat. All rights reserved.
             </p>
           </div>
 
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8 justify-center md:justify-start">
-            <Link to="/" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-lg">
+            <Link to="/" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-[16px] sm:text-lg">
               Home
             </Link>
-            <Link to="/features" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-lg" >
+            <Link to="/features" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-[16px] sm:text-lg" >
               Features
             </Link>
-            <Link to="/contact" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-lg" >
+            <Link to="/contact" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-[16px] sm:text-lg" >
               Contact
             </Link>
-            <Link to="/know-more" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-lg" >
+            <Link to="/know-more" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-[16px] sm:text-lg" >
               About
             </Link>
           </div>
         </div>
 
         <div className="flex justify-center space-x-6 mt-8">
-          <a href="/" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-2xl">
+          <a href="/" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-xl sm:text-2xl">
             <FaFacebook />
           </a>
-          <a href="/" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-2xl">
+          <a href="/" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-xl sm:text-2xl">
             <FaTwitter />
           </a>
-          <a href="/" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-2xl">
+          <a href="/" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-xl sm:text-2xl">
             <FaInstagram />
           </a>
-          <a href="/" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-2xl" >
+          <a href="/" className="text-gray-300 hover:text-[#00A1AB] transition duration-300 text-xl sm:text-2xl" >
             <FaLinkedin />
           </a>
         </div>
