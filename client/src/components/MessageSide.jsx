@@ -1,14 +1,21 @@
-import React, { useContext } from 'react';
+import React, { useContext,useEffect } from 'react';
 import { SidebarContext } from '../context/SidebarChatContext.jsx';
 import { FaUser } from 'react-icons/fa';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
+import socket from '../socket/Socket.jsx';
 
-const MessageSide = () => {
+const MessageSide = (user) => {
   const { sidebarChats } = useContext(SidebarContext);
   const { userData } = useContext(AuthContext)
 
   const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user) {
+            socket.emit("userConnected", user._id);
+        }
+    }, [user]);
 
   const handleClick = (receiverId) => {
   console.log('Receiver ID:', receiverId)

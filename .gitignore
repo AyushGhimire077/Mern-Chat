@@ -31,4 +31,3 @@ coverage/
 # If using .env.production, .env.development for different environments
 client/.env.*
 server/.env.*
-

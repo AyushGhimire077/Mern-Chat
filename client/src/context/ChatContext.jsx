@@ -1,60 +1,94 @@
 import { createContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import socket from "../socket/Socket.jsx";
 
 const ChatContext = createContext();
 
-
 const ChatContextProvider = ({ children }) => {
+  const backendUI = "http://localhost:4000";
 
-    const [messages, setMessages] = useState([]);
-    const [receiverInfo, setReceiverInfo ] = useState(null);
+  const [receiverInfo, setReceiverInfo] = useState(null);
+  const [messages, setMessages] = useState([]);
 
-    const backendURI = 'http://localhost:4000';
-
-    //fetch messages
-    const fetchMessages = async (receiverId) => {
-        try {
-            const { data } = await axios.get(`${backendURI}/api/message/get-messages/${receiverId}`,
-                { withCredentials: true }         
-            ); 
-            setMessages(data.messages || []);
-        } catch (error) {
-            toast.error('Something went wrong');
-            console.log(error);
-            
-        }
-    }
-
-    //fetch userInfo
-    const fetchUserInfo = async (receiverId) => {
-    console.log(receiverId);
+  // Fetch receiver info
+  const fetchReceiverInfo = async (receiverId) => {
     try {
-        const { data } = await axios.get(`${backendURI}/api/message/${receiverId}`, { withCredentials: true });
-        console.log(data);
-        if (data.success) {
-            setReceiverInfo(data.user);
-        } else {
-            toast.error(data.message);
-        }
+      const { data } = await axios.get(`${backendUI}/api/message/${receiverId}`, { withCredentials: true });
+      if (data.success) {
+        setReceiverInfo(data.user);
+      }
     } catch (error) {
-        console.log("Error fetching user info:", error);
+      toast.error(error.response?.data?.message || "Failed to fetch receiver info");
+      console.error(error);
     }
+  };
+
+  // Fetch messages
+  const fetchMessages = async (receiverId) => {
+    try {
+      const { data } = await axios.get(`${backendUI}/api/message/get-messages/${receiverId}`, { withCredentials: true });
+      setMessages(data.messages);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to fetch messages");
+      console.error(error);
+    }
+  };
+
+  // Send message
+const sendMessage = async (text, image, receiverId) => {
+  try {
+    const { data } = await axios.post(`${backendUI}/api/message/send/${receiverId}`, { text, image }, { withCredentials: true });
+
+    if (data.success) {
+      const newMessage = data.message;
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+      // Emit message to server
+      socket.emit("send-message", newMessage);
+
+    } else {
+      toast.error(data.message);
+    }
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to send message");
+    console.error(error);
+  }
 };
 
 
-    const value = {
-        messages,
-        fetchMessages,
-        fetchUserInfo,
-        receiverInfo,
-    };
+  // Listen for incoming messages
+useEffect(() => {
+  console.log("Socket connected:", socket.connected);
 
-    return (
-    <ChatContext.Provider value={value}>
+  const handleReceiveMessage = (message) => {
+    console.log('Received message:', message);
+    setMessages((prevMessages) => {
+      if (!prevMessages.some((msg) => msg._id === message._id)) {
+        return [...prevMessages, message];
+      }
+      return prevMessages;
+    });
+  };
+
+  socket.on("receive-message", handleReceiveMessage);
+
+  return () => {
+    socket.off("receive-message", handleReceiveMessage);
+  };
+}, []);
+
+  return (
+    <ChatContext.Provider value={{
+      fetchReceiverInfo,
+      receiverInfo,
+      fetchMessages,
+      messages,
+      sendMessage,
+    }}>
       {children}
-    </ChatContext.Provider> )
+    </ChatContext.Provider>
+  );
 };
-
 
 export { ChatContext, ChatContextProvider };
