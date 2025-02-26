@@ -22,18 +22,18 @@ const Guest = () => {
   return (
     <div>
       <Navbar />
-      <div className="flex justify-evenly items-center h-[100vh] bg-[#0F0F0F] p-8">
+      <div className="flex-col md:flex md:flex-row justify-evenly items-center h-auto sm:h-[100vh] bg-[#0F0F0F] p-8">
         <div className="w-full md:w-[35%] text-white p-1 mb-8 text-start md:text-start">
-          <h1 className="text-4xl font-bold mb-4"
+          <h1 className="text-[18px] md:text-4xl font-bold mb-4"
             data-aos="fade-in"
             data-aos-duration="2500"
           >Start Chat with your friends or family, Anywhere anytime</h1>
-          <p className="mb-4"
+          <p className="text-[14px] md:text-xl mb-4"
             data-aos="fade-in"
             data-aos-duration="2500"
             data-aos-delay="500"
           >With Mern-Chat, An application that allows you to chat with your friends or family, Anywhere anytime</p>
-          <Link to='/authorization' className='py-3 px-6 rounded-xl text-center flex items-center gap-2 hover:bg-[#483d9edc] duration-500 bg-[#493D9E] w-fit'
+          <Link to='/authorization' className='mt-7 sm:mt-0 text-[13px] sm:text-xl px-3.5 py-2 sm:py-3 sm:px-6 rounded-xl text-center flex items-center gap-2 hover:bg-[#483d9edc] duration-500 bg-[#493D9E] w-fit'
             data-aos="fade-out"
             data-aos-duration="2500"
             data-aos-delay="1000"
