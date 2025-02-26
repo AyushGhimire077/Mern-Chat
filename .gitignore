@@ -25,9 +25,6 @@ server/build/
 npm-debug.log*
 package-lock.json
 
-# Ignore coverage folder from testing
-coverage/
-
 # If using .env.production, .env.development for different environments
 client/.env.*
 server/.env.*
