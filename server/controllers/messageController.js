@@ -38,7 +38,6 @@ export const fetchMessages = async (req, res) => {
 };
 
 // Send Message
-// Send Message
 export const sendMessage = async (req, res) => {
   try {
     const { text, image } = req.body;
